@@ -5,6 +5,7 @@ extern crate circuitdojo_tester as hal;
 extern crate cortex_m;
 extern crate cortex_m_semihosting;
 
+// Different ways to handle panics
 #[cfg(not(feature = "use_semihosting"))]
 extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
@@ -16,7 +17,8 @@ use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
-// Enable semihosting
+// Enable semihosting hprint and hprintln only when enabled
+#[cfg(feature = "use_semihosting")]
 use cortex_m_semihosting::{hprint, hprintln};
 
 #[entry]
@@ -34,11 +36,13 @@ fn main() -> ! {
     );
 
     #[cfg(feature = "use_semihosting")]
-    hprintln!("Tester started.").unwrap();
+    {
+        hprintln!("Tester started.").unwrap();
 
-    // Get the pins
-    let port0 = peripherals.PORT.in0.read().bits();
-    let _ = hprint!("Port: {:X?}\n", port0);
+        // Get the pins
+        let port0 = peripherals.PORT.in0.read().bits();
+        let _ = hprint!("Port: {:X?}\n", port0);
+    }
 
     // Split the pins
     let mut pins = hal::Pins::new(peripherals.PORT).split();
@@ -69,6 +73,7 @@ fn main() -> ! {
         led_fail.set_low().unwrap();
         led_pass.set_high().unwrap();
 
+        // Print if using semi-hosting
         #[cfg(feature = "use_semihosting")]
         hprintln!(".").unwrap();
     }

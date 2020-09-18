@@ -1,12 +1,20 @@
 TOOLCHAIN_BIN_DIR := /Users/jaredwolff/gcc-arm-none-eabi-9-2019-q4-major/bin
-TARGET := target/thumbv6m-none-eabi/debug/examples/blinky_basic
+TARGET := target/thumbv6m-none-eabi/debug/examples/main
 MCU_TARGET := atsamd21j16b
+DEBUG := false
+
+# Disabling debug allows to run the code without debugger attached.
+ifeq ($(DEBUG), true)
+FEATURES := --features use_semihosting
+else
+FEATURES :=
+endif
 
 default: build
 
 .PHONY: build
 build:
-	@cargo build --example blinky_basic --features use_semihosting
+	@cargo build --example main $(FEATURES)
 	@$(TOOLCHAIN_BIN_DIR)/arm-none-eabi-objcopy -O binary \
     $(TARGET) \
     $(TARGET).bin

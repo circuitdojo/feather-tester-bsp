@@ -129,6 +129,9 @@ $ make debug-output
 **Note:** `make debug-client` and `make debug-server` are both needed to run the example with semihosting. (i.e. debug console over SWD)
 Removing the semi-hosting print commands will allow normal exeuction.
 
+## Production mode
+To use *without* semi-hosting, simply re
+
 ## Testing
 
 - [x] Testing power supplies
