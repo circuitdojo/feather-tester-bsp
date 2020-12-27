@@ -1,20 +1,21 @@
-TOOLCHAIN_BIN_DIR := /Users/jaredwolff/gcc-arm-none-eabi-9-2019-q4-major/bin
-TARGET := target/thumbv6m-none-eabi/debug/examples/main
-MCU_TARGET := atsamd21j16b
+TOOLCHAIN_BIN_DIR := /opt/nordic/ncs/v1.4.1/toolchain/bin
+EXAMPLE := usb_echo
+TARGET := target/thumbv6m-none-eabi/debug/examples/$(EXAMPLE)
+MCU_TARGET := atsamd21j18a
 DEBUG := false
+
+FEATURES := usb
 
 # Disabling debug allows to run the code without debugger attached.
 ifeq ($(DEBUG), true)
-FEATURES := --features use_semihosting
-else
-FEATURES :=
+FEATURES += use_semihosting
 endif
 
 default: build
 
 .PHONY: build
 build:
-	@cargo build --example main $(FEATURES)
+	cargo build --example $(EXAMPLE) --features "$(FEATURES)"
 	@$(TOOLCHAIN_BIN_DIR)/arm-none-eabi-objcopy -O binary \
     $(TARGET) \
     $(TARGET).bin

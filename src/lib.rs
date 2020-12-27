@@ -17,9 +17,14 @@ pub use hal::target_device as pac;
 use crate::hal::gpio::{self, *};
 use gpio::{Floating, Input, Port};
 
-// use hal::clock::GenericClockController;
-// use hal::sercom::{PadPin, UART5};
+use hal::clock::GenericClockController;
+// use hal::sercom::UART3;
 // use hal::time::Hertz;
+
+#[cfg(feature = "usb")]
+use hal::usb::usb_device::bus::UsbBusAllocator;
+#[cfg(feature = "usb")]
+pub use hal::usb::UsbBus;
 
 define_pins!(
     /// Maps the pins to their names and
@@ -37,6 +42,10 @@ define_pins!(
     /// Enable pins
     pin vbus_en = a16,
     pin vbat_en = a17,
+
+    /// USB D+/- pins
+    pin usb_dm = a24,
+    pin usb_dp = a25,
 
     /// DUT related
     pin en = a15,
@@ -61,6 +70,7 @@ define_pins!(
     pin a0 = b3,
     pin md = b2,
     pin rst = b0,
+    pin ps_en = b14,
 
 );
 
@@ -107,6 +117,11 @@ impl Pins {
             en: self.en,
         };
 
+        let usb = USB {
+            dm: self.usb_dm,
+            dp: self.usb_dp,
+        };
+
         Sets {
             port: self.port,
             leds,
@@ -114,6 +129,7 @@ impl Pins {
             digital,
             pwr,
             ctrl,
+            usb,
         }
     }
 }
@@ -137,6 +153,9 @@ pub struct Sets {
 
     /// DUT control
     pub ctrl: DutControl,
+
+    /// USB pins
+    pub usb: USB,
 }
 
 /// Controlling power on the DUT
@@ -184,24 +203,55 @@ pub struct Digital {
     pub d12: Pb10<Input<Floating>>,
 }
 
-// /// Convenience for setting up the serial communication pins
-// //// operate as UART RX/TX (respectively) running at the specified baud.
+/// USB pins
+pub struct USB {
+    pub dm: Pa24<Input<Floating>>,
+    pub dp: Pa25<Input<Floating>>,
+}
+
+#[cfg(feature = "usb")]
+pub fn usb_allocator(
+    usb: pac::USB,
+    clocks: &mut GenericClockController,
+    pm: &mut pac::PM,
+    dm: gpio::Pa24<Input<Floating>>,
+    dp: gpio::Pa25<Input<Floating>>,
+    port: &mut Port,
+) -> UsbBusAllocator<UsbBus> {
+    let gclk0 = clocks.gclk0();
+    let usb_clock = &clocks.usb(&gclk0).unwrap();
+
+    UsbBusAllocator::new(UsbBus::new(
+        usb_clock,
+        pm,
+        dm.into_function(port),
+        dp.into_function(port),
+        usb,
+    ))
+}
+
+// /// Convenience for setting up the labelled RX, TX pins to
+// /// operate as a UART device running at the specified baud.
 // pub fn uart<F: Into<Hertz>>(
 //     clocks: &mut GenericClockController,
 //     baud: F,
-//     sercom5: pac::SERCOM5,
+//     sercom3: pac::SERCOM3,
 //     pm: &mut pac::PM,
-//     rx: gpio::Pb31<Input<Floating>>,
-//     tx: gpio::Pb30<Input<Floating>>,
+//     rx: gpio::Pb14<Input<Floating>>,
+//     tx: gpio::Pb13<Input<Floating>>,
 //     port: &mut Port,
-// ) -> UART5<hal::sercom::Sercom5Pad1<gpio::Pb31<PfD>>, hal::sercom::Sercom5Pad0<gpio::Pb30<PfD>>, (), ()>
-// {
+// ) -> UART3<
+//     hal::sercom::Sercom3Pad0<gpio::Pb14<PfD>>,
+//     hal::sercom::Sercom3Pad1<gpio::Pb13<PfD>>,
+//     (),
+//     (),
+// > {
 //     let gclk0 = clocks.gclk0();
 
-//     UART5::new(
-//         &clocks.sercom5_core(&gclk0).unwrap(),
+//     UART3::new(
+//         &clocks.sercom3_core(&gclk0).unwrap(),
 //         baud.into(),
-//         sercom5,
+//         sercom3,
 //         pm,
 //         (rx.into_pad(port), tx.into_pad(port)),
 //     )

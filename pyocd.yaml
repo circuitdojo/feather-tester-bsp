@@ -1,0 +1,7 @@
+probes:
+  109300003138f4491239333437353533a5a5a5a597969906: # Probe's unique ID.
+    target_override:  atsamd21j18a
+
+# Global options
+auto_unlock: false
+frequency: 4000000 # Set 4 MHz SWD default for all probes
