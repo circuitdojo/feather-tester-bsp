@@ -10,7 +10,6 @@ edition = "2018"
 [dependencies]
 cortex-m = "0.6.4"
 embedded-hal = "0.2.4"
-nb = "0.1"
 
 [dependencies.cortex-m-rt]
 optional = true
@@ -47,12 +46,6 @@ optional = true
 
 [dev-dependencies]
 cortex-m-semihosting = "0.3"
-ssd1306 = "0.3.1"
-embedded-graphics = "0.6.0"
-nb = "0.1"
-drogue-nom-utils = "0.1"
-nom = { version = "5.1", default-features = false }
-heapless = "0.5"
 
 [features]
 default = ["rt", "atsamd-hal/samd21j", "panic_halt", "unproven"]
@@ -63,8 +56,6 @@ usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 panic_halt = ["panic-halt"]
 panic_abort = ["panic-abort"]
 panic_semihosting = ["panic-semihosting"]
-rfm = []
-express = []
 
 [profile.dev]
 incremental = false
