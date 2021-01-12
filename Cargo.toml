@@ -1,6 +1,6 @@
 [package]
 name = "circuitdojo_tester"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Jared Wolff <hello@jaredwolff.com>"]
 description = "Board Support crate for the Circuitdojo Feather Tester"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -17,7 +17,8 @@ version = "0.6.12"
 
 [dependencies.atsamd-hal]
 default-features = false
-version = "0.11"
+git = "https://github.com/jaredwolff/atsamd/"
+branch = "jared-circuitdojo-tester-dev"
 
 [dependencies.panic-abort]
 version = "0.3"
