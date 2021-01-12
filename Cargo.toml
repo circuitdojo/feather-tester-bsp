@@ -1,6 +1,6 @@
 [package]
 name = "circuitdojo_tester"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Jared Wolff <hello@jaredwolff.com>"]
 description = "Board Support crate for the Circuitdojo Feather Tester"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
