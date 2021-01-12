@@ -137,11 +137,11 @@ To use *without* semi-hosting, simply re
 - [x] Testing power supplies
   - [x] VBAT
   - [x] 5V USB
-- [ ] GPIO Pins tested
-  - [ ] En
-  - [ ] Reset
-  - [ ] D12-D0
-  - [ ] A0-A5
-- [ ] Analog measurements
-  - [ ] Voltages
+- [x] GPIO Pins tested
+  - [x] En
+  - [x] Reset
+  - [x] D12-D0
+  - [x] A0-A5
+- [x] Analog measurements
+  - [x] Voltages
   - [ ] Current
