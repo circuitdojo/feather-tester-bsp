@@ -9,9 +9,9 @@ extern crate usbd_serial;
 
 use hal::clock::GenericClockController;
 use hal::entry;
-use hal::gpio::v2::*;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::prelude::*;
+use hal::Pins;
 
 use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
@@ -33,9 +33,9 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let pins = Pins::new(peripherals.PORT);
-    let mut led_pass = pins.pa23.into_push_pull_output();
-    let dm = pins.pa24.into_floating_input();
-    let dp = pins.pa25.into_floating_input();
+    let mut led_pass = pins.led_pass.into_push_pull_output();
+    let dm = pins.dm.into_floating_input();
+    let dp = pins.dp.into_floating_input();
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(hal::usb_allocator(

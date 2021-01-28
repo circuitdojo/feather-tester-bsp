@@ -13,6 +13,7 @@ pub use hal::target_device as pac;
 
 // use hal::sercom::v2::UART3;
 // use hal::time::Hertz;
+use hal::bsp_pins;
 
 #[cfg(feature = "usb")]
 use hal::clock::GenericClockController;
@@ -23,53 +24,49 @@ use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 
-// define_pins!(
-//     /// Maps the pins to their names and
-//     /// the numbers printed on the board.
-//     struct Pins,
-//     target_device: target_device,
+bsp_pins!(
+    #[cfg(feature = "unproven")]
+    PA23 {
+        name: led_pass,
+        aliases: { PushPullOutput: LedPass }
+    }
 
-//     /// LEDS
-//     pin led_fail = a22,
-//     pin led_pass = a23,
+    #[cfg(feature = "unproven")]
+    PA22 {
+        name: led_fail,
+        aliases: { PushPullOutput: LedFail }
+    }
 
-//     /// Start switch
-//     pin start_sw = a18,
+    #[cfg(feature = "unproven")]
+    PA17 {
+        name: vbat_en,
+        aliases: { PushPullOutput: VbatEn }
+    }
 
-//     /// Enable pins
-//     pin vbus_en = a16,
-//     pin vbat_en = a17,
+    #[cfg(feature = "unproven")]
+    PB14 {
+        name: ps_en,
+        aliases: { PushPullOutput: PsEn }
+    }
 
-//     /// USB D+/- pins
-//     pin usb_dm = a24,
-//     pin usb_dp = a25,
+    #[cfg(feature = "unproven")]
+    PA24 {
+        name: dm,
+        aliases: {
+            #[cfg(feature = "usb")]
+            AlternateG: UsbDm
+        }
+    }
 
-//     /// DUT related
-//     pin en = a15,
-//     pin d0 = a13,
-//     pin d1 = a12,
-//     pin d2 = b15,
-//     pin d3 = a11,
-//     pin d4 = a10,
-//     pin d5 = a9,
-//     pin d6 = a8,
-//     pin d7 = a7,
-//     pin d8 = a6,
-//     pin d9 = b13,
-//     pin d10 = b12,
-//     pin d11 = b11,
-//     pin d12 = b10,
-//     pin a5 = b8,
-//     pin a4 = b7,
-//     pin a3 = b6,
-//     pin a2 = b5,
-//     pin a1 = b4,
-//     pin a0 = b3,
-//     pin md = b2,
-//     pin rst = b0,
-//     pin ps_en = b14,
-
-// );
+    #[cfg(feature = "unproven")]
+    PA25 {
+        name: dp,
+        aliases: {
+            #[cfg(feature = "usb")]
+            AlternateG: UsbDp
+        }
+    }
+);
 
 #[cfg(feature = "usb")]
 pub fn usb_allocator(

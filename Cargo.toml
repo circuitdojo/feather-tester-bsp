@@ -10,39 +10,15 @@ edition = "2018"
 [dependencies]
 cortex-m = "0.6.4"
 embedded-hal = "0.2.4"
-
-[dependencies.cortex-m-rt]
-optional = true
-version = "0.6.12"
-
-[dependencies.atsamd-hal]
-default-features = false
-git = "https://github.com/jaredwolff/atsamd/"
-branch = "jared-circuitdojo-tester-dev"
-
-[dependencies.panic-abort]
-version = "0.3"
-optional = true
-
-[dependencies.panic-halt]
-version = "0.2"
-optional = true
-
-[dependencies.panic-semihosting]
-version = "0.5"
-optional = true
-
-[dependencies.panic_rtt]
-version = "0.1"
-optional = true
-
-[dependencies.usb-device]
-version = "0.2"
-optional = true
-
-[dependencies.usbd-serial]
-version = "0.1"
-optional = true
+atsamd-hal = { default-features = false, git = "https://github.com/jaredwolff/atsamd/", rev = "c664589cff36a174e0e4a3e6f31e14f3d5dce1b0" }
+cortex-m-rt = { optional = true, version = "0.6.12" }
+panic-abort = { optional = true, version = "0.3" }
+panic-halt = { optional = true, version = "0.2" }
+panic-semihosting = { optional = true, version = "0.5" }
+panic_rtt = { optional = true, version = "0.1" }
+usb-device = { optional = true, version = "0.2" }
+usbd-serial = { optional = true, version = "0.1" }
+cortex-m-rtic = "0.5"
 
 [dev-dependencies]
 cortex-m-semihosting = "0.3"
@@ -74,3 +50,6 @@ required-features = ["usb"]
 
 [[example]]
 name = "blinky_basic"
+
+[[example]]
+name = "rtic_blinky_basic"

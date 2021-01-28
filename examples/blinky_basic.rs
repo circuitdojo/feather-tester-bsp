@@ -12,9 +12,9 @@ extern crate panic_semihosting;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::entry;
-use hal::gpio::v2::Pins;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
+use hal::Pins;
 
 #[entry]
 fn main() -> ! {
@@ -27,21 +27,22 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let pins = Pins::new(peripherals.PORT);
-    let mut red_led = pins.pa23.into_push_pull_output();
+    let mut led_pass = pins.led_pass.into_push_pull_output();
 
     // Enable the battery output
-    let mut vbat_en = pins.pa17.into_push_pull_output();
+    let mut vbat_en = pins.vbat_en.into_push_pull_output();
     vbat_en.set_high().unwrap();
 
     // Enable the md in
-    let mut ps_en = pins.pa22.into_push_pull_output();
+    let mut ps_en = pins.ps_en.into_push_pull_output();
     ps_en.set_high().unwrap();
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
     loop {
         delay.delay_ms(200u8);
-        red_led.set_high().unwrap();
+        led_pass.set_high().unwrap();
+
         delay.delay_ms(200u8);
-        red_led.set_low().unwrap();
+        led_pass.set_low().unwrap();
     }
 }
