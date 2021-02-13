@@ -14,6 +14,7 @@ pub use hal::target_device as pac;
 // use hal::sercom::v2::UART3;
 // use hal::time::Hertz;
 use hal::bsp_pins;
+use hal::gpio::{Pa24, Pa25};
 
 #[cfg(feature = "usb")]
 use hal::clock::GenericClockController;
@@ -25,6 +26,97 @@ use hal::usb::usb_device::bus::UsbBusAllocator;
 pub use hal::usb::UsbBus;
 
 bsp_pins!(
+
+    #[cfg(feature = "unproven")]
+    PA13 {
+        name: d0
+    }
+
+    #[cfg(feature = "unproven")]
+    PA12 {
+        name: d1
+    }
+
+    #[cfg(feature = "unproven")]
+    PB15 {
+        name: d2
+    }
+
+    #[cfg(feature = "unproven")]
+    PA11 {
+        name: d3
+    }
+
+    #[cfg(feature = "unproven")]
+    PA10 {
+        name: d4
+    }
+
+    #[cfg(feature = "unproven")]
+    PA09  {
+        name: d5
+    }
+
+    #[cfg(feature = "unproven")]
+    PA08 {
+        name: d6
+    }
+
+    #[cfg(feature = "unproven")]
+    PA06 {
+        name: d8
+    }
+
+    #[cfg(feature = "unproven")]
+    PB12 {
+        name: d10
+    }
+
+    #[cfg(feature = "unproven")]
+    PB11 {
+        name: d11
+    }
+
+    #[cfg(feature = "unproven")]
+    PB10 {
+        name: d12
+    }
+
+    #[cfg(feature = "unproven")]
+    PB09 {
+        name: d13
+    }
+
+    #[cfg(feature = "unproven")]
+    PB08 {
+        name: a5
+    }
+
+    #[cfg(feature = "unproven")]
+    PB07 {
+        name: a4
+    }
+
+    #[cfg(feature = "unproven")]
+    PB06 {
+        name: a3
+    }
+
+    #[cfg(feature = "unproven")]
+    PB05 {
+        name: a2
+    }
+
+    #[cfg(feature = "unproven")]
+    PB04 {
+        name: a1
+    }
+
+    #[cfg(feature = "unproven")]
+    PB03 {
+        name: a0
+    }
+
     #[cfg(feature = "unproven")]
     PA23 {
         name: led_pass,
@@ -36,6 +128,35 @@ bsp_pins!(
         name: led_fail,
         aliases: { PushPullOutput: LedFail }
     }
+
+    #[cfg(feature = "unproven")]
+    PB01 {
+        name: meas_3v3,
+        aliases: { AlternateB: Meas3V3 }
+    }
+
+    #[cfg(feature = "unproven")]
+    PB02 {
+        name: md
+    }
+
+    #[cfg(feature = "unproven")]
+    PB00 {
+        name: rst
+    }
+
+    #[cfg(feature = "unproven")]
+    PB13 {
+        name: walk_clk,
+        aliases: { PushPullOutput: WlkClk }
+    }
+
+    #[cfg(feature = "unproven")]
+    PA14 {
+        name: dut_en,
+        aliases: { PushPullOutput: DutEn }
+    }
+
 
     #[cfg(feature = "unproven")]
     PA17 {
@@ -79,13 +200,12 @@ pub fn usb_allocator(
     let gclk0 = clocks.gclk0();
     let usb_clock = &clocks.usb(&gclk0).unwrap();
 
-    UsbBusAllocator::new(UsbBus::new(
-        usb_clock,
-        pm,
-        dm.into_alternate(),
-        dp.into_alternate(),
-        usb,
-    ))
+    // Convert to v1
+    let dm: Pa24<_> = dm.into_alternate().into();
+    let dp: Pa25<_> = dp.into_alternate().into();
+
+    // Then pop those into UsbBus
+    UsbBusAllocator::new(UsbBus::new(usb_clock, pm, dm, dp, usb))
 }
 
 // /// Convenience for setting up the labelled RX, TX pins to

@@ -10,7 +10,7 @@ edition = "2018"
 [dependencies]
 cortex-m = "0.6.4"
 embedded-hal = "0.2.4"
-atsamd-hal = { default-features = false, git = "https://github.com/jaredwolff/atsamd/", rev = "c664589cff36a174e0e4a3e6f31e14f3d5dce1b0" }
+atsamd-hal = { git = "https://github.com/atsamd-rs/atsamd", rev = "35a78a3a215fc04c349aa770b7640eeec9e624f9" }
 cortex-m-rt = { optional = true, version = "0.6.12" }
 panic-abort = { optional = true, version = "0.3" }
 panic-halt = { optional = true, version = "0.2" }
