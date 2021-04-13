@@ -10,12 +10,12 @@ edition = "2018"
 [dependencies]
 cortex-m = "0.6.4"
 embedded-hal = "0.2.4"
-atsamd-hal = { git = "https://github.com/atsamd-rs/atsamd", rev = "35a78a3a215fc04c349aa770b7640eeec9e624f9" }
+atsamd-hal = { git = "https://github.com/atsamd-rs/atsamd", branch = "master" }
 cortex-m-rt = { optional = true, version = "0.6.12" }
 panic-abort = { optional = true, version = "0.3" }
 panic-halt = { optional = true, version = "0.2" }
 panic-semihosting = { optional = true, version = "0.5" }
-panic_rtt = { optional = true, version = "0.1" }
+panic_rtt = { optional = true, version = "0.3" }
 usb-device = { optional = true, version = "0.2" }
 usbd-serial = { optional = true, version = "0.1" }
 cortex-m-rtic = "0.5"

@@ -8,18 +8,16 @@ extern crate cortex_m_rt;
 pub use cortex_m_rt::entry;
 
 pub use hal::common::*;
-pub use hal::samd21::*;
 pub use hal::target_device as pac;
 
 // use hal::sercom::v2::UART3;
 // use hal::time::Hertz;
 use hal::bsp_pins;
-use hal::gpio::{Pa24, Pa25};
 
 #[cfg(feature = "usb")]
 use hal::clock::GenericClockController;
 #[cfg(feature = "usb")]
-use hal::gpio::v2::{Floating, Input, Pin, PA24, PA25};
+use hal::gpio::v2::{AnyPin, PA24, PA25};
 #[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
@@ -194,15 +192,11 @@ pub fn usb_allocator(
     usb: pac::USB,
     clocks: &mut GenericClockController,
     pm: &mut pac::PM,
-    dm: Pin<PA24, Input<Floating>>,
-    dp: Pin<PA25, Input<Floating>>,
+    dm: impl AnyPin<Id = PA24>,
+    dp: impl AnyPin<Id = PA25>,
 ) -> UsbBusAllocator<UsbBus> {
     let gclk0 = clocks.gclk0();
     let usb_clock = &clocks.usb(&gclk0).unwrap();
-
-    // Convert to v1
-    let dm: Pa24<_> = dm.into_alternate().into();
-    let dp: Pa25<_> = dp.into_alternate().into();
 
     // Then pop those into UsbBus
     UsbBusAllocator::new(UsbBus::new(usb_clock, pm, dm, dp, usb))
