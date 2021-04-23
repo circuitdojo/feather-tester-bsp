@@ -113,6 +113,7 @@ bsp_pins!(
     #[cfg(feature = "unproven")]
     PB03 {
         name: a0
+        aliases: { PullDownInput: SimCheck }
     }
 
     #[cfg(feature = "unproven")]
