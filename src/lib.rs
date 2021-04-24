@@ -10,12 +10,22 @@ pub use cortex_m_rt::entry;
 pub use hal::common::*;
 pub use hal::target_device as pac;
 
-// use hal::sercom::v2::UART3;
-// use hal::time::Hertz;
+// Shared with UART/USB
+#[cfg(any(feature = "uart", feature = "usb"))]
+use hal::clock::GenericClockController;
+#[cfg(any(feature = "uart", feature = "usb"))]
+use hal::gpio::v2::AlternateC;
+
+// UART related
+#[cfg(feature = "uart")]
+use hal::gpio::v2::{PB12, PB13};
+#[cfg(feature = "uart")]
+use hal::sercom::UART4;
+#[cfg(feature = "uart")]
+use hal::time::Hertz;
+
 use hal::bsp_pins;
 
-#[cfg(feature = "usb")]
-use hal::clock::GenericClockController;
 #[cfg(feature = "usb")]
 use hal::gpio::v2::{AnyPin, PA24, PA25};
 #[cfg(feature = "usb")]
@@ -68,6 +78,10 @@ bsp_pins!(
     #[cfg(feature = "unproven")]
     PB12 {
         name: d10
+        aliases: {
+            #[cfg(feature = "uart")]
+            AlternateC: Tx
+        }
     }
 
     #[cfg(feature = "unproven")]
@@ -146,8 +160,11 @@ bsp_pins!(
 
     #[cfg(feature = "unproven")]
     PB13 {
-        name: walk_clk,
-        aliases: { PushPullOutput: WlkClk }
+        name: d9,
+        aliases: {
+            #[cfg(feature = "uart")]
+            AlternateC: Rx
+        }
     }
 
     #[cfg(feature = "unproven")]
@@ -203,28 +220,29 @@ pub fn usb_allocator(
     UsbBusAllocator::new(UsbBus::new(usb_clock, pm, dm, dp, usb))
 }
 
-// /// Convenience for setting up the labelled RX, TX pins to
-// /// operate as a UART device running at the specified baud.
-// pub fn uart<F: Into<Hertz>>(
-//     clocks: &mut GenericClockController,
-//     baud: F,
-//     sercom3: pac::SERCOM3,
-//     pm: &mut pac::PM,
-//     rx: Pin<PB14, Input<Floating>>,
-//     tx: Pin<PB13, Input<Floating>>,
-// ) -> UART3<
-//     hal::sercom::Sercom3Pad0<gpio::Pb14<PfD>>,
-//     hal::sercom::Sercom3Pad1<gpio::Pb13<PfD>>,
-//     (),
-//     (),
-// > {
-//     let gclk0 = clocks.gclk0();
+/// Convenience for setting up the labelled RX, TX pins to
+/// operate as a UART device running at the specified baud.
+#[cfg(feature = "uart")]
+pub fn uart<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    baud: F,
+    sercom4: pac::SERCOM4,
+    pm: &mut pac::PM,
+    rx: gpio::v2::Pin<PB13, AlternateC>,
+    tx: gpio::v2::Pin<PB12, AlternateC>,
+) -> UART4<
+    hal::sercom::Sercom4Pad1<gpio::Pb13<gpio::PfC>>,
+    hal::sercom::Sercom4Pad0<gpio::Pb12<gpio::PfC>>,
+    (),
+    (),
+> {
+    let gclk0 = clocks.gclk0();
 
-//     UART3::new(
-//         &clocks.sercom3_core(&gclk0).unwrap(),
-//         baud.into(),
-//         sercom3,
-//         pm,
-//         (rx.into_alternate(), tx.into_alternate()),
-//     )
-// }
+    UART4::new(
+        &clocks.sercom4_core(&gclk0).unwrap(),
+        baud.into(),
+        sercom4,
+        pm,
+        (rx.into(), tx.into()),
+    )
+}
