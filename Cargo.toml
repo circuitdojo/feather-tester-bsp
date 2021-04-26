@@ -10,7 +10,8 @@ edition = "2018"
 [dependencies]
 cortex-m = "0.6.4"
 embedded-hal = "0.2.4"
-atsamd-hal = { git = "https://github.com/atsamd-rs/atsamd", branch = "master" }
+atsamd-hal = { git = "https://github.com/jaredwolff/atsamd", branch = "circuitdojo-uart-modes" }
+# atsamd-hal = { path = "/Users/jaredwolff/Git/atsamd/hal" }
 cortex-m-rt = { optional = true, version = "0.6.12" }
 panic-abort = { optional = true, version = "0.3" }
 panic-halt = { optional = true, version = "0.2" }
