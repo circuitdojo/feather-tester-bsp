@@ -173,6 +173,12 @@ bsp_pins!(
         aliases: { PushPullOutput: DutEn }
     }
 
+    #[cfg(feature = "unproven")]
+    PA16 {
+        name: vbus_en,
+        aliases: { PushPullOutput: VbusEn }
+    }
+
 
     #[cfg(feature = "unproven")]
     PA17 {
