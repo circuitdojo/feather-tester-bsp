@@ -16,6 +16,12 @@ use hal::clock::GenericClockController;
 #[cfg(any(feature = "uart", feature = "usb"))]
 use hal::gpio::v2::AlternateC;
 
+// I2C Related
+#[cfg(feature = "i2c")]
+use hal::gpio::v2::{PA12, PA13};
+#[cfg(feature = "i2c")]
+use hal::sercom::I2CMaster2;
+
 // UART related
 #[cfg(feature = "uart")]
 use hal::gpio::v2::{PB12, PB13};
@@ -36,13 +42,21 @@ pub use hal::usb::UsbBus;
 bsp_pins!(
 
     #[cfg(feature = "unproven")]
-    PA13 {
-        name: d0
+    PA12 {
+        name: d0_sda
+        aliases: {
+            #[cfg(feature = "i2c")]
+            AlternateC: Sda
+        }
     }
 
     #[cfg(feature = "unproven")]
-    PA12 {
-        name: d1
+    PA13 {
+        name: d1_scl
+        aliases: {
+            #[cfg(feature = "i2c")]
+            AlternateC: Scl
+        }
     }
 
     #[cfg(feature = "unproven")]
@@ -149,6 +163,12 @@ bsp_pins!(
     }
 
     #[cfg(feature = "unproven")]
+    PA02 {
+        name: meas_hpma_5v0,
+        aliases: { AlternateB: MeasHpma5V0 }
+    }
+
+    #[cfg(feature = "unproven")]
     PB02 {
         name: md
     }
@@ -250,5 +270,30 @@ pub fn uart<F: Into<Hertz>>(
         sercom4,
         pm,
         (rx.into(), tx.into()),
+    )
+}
+
+// TODO: confirm this..
+/// Convenience for setting up the labelled SDA, SCL pins to
+/// operate as an I2C master running at the specified frequency.
+pub fn i2c_master<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    bus_speed: F,
+    sercom2: pac::SERCOM2,
+    pm: &mut pac::PM,
+    sda: gpio::v2::Pin<PA12, AlternateC>,
+    scl: gpio::v2::Pin<PA13, AlternateC>,
+) -> I2CMaster2<
+    hal::sercom::Sercom2Pad0<gpio::Pa12<gpio::PfC>>,
+    hal::sercom::Sercom2Pad1<gpio::Pa13<gpio::PfC>>,
+> {
+    let gclk0 = clocks.gclk0();
+    I2CMaster2::new(
+        &clocks.sercom2_core(&gclk0).unwrap(),
+        bus_speed.into(),
+        sercom2,
+        pm,
+        sda.into(),
+        scl.into(),
     )
 }
