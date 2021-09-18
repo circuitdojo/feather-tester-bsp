@@ -96,7 +96,7 @@ bsp_pins!(
 
     #[cfg(feature = "unproven")]
     PB12 {
-        name: d10
+        name: tx
         aliases: {
             #[cfg(feature = "uart")]
             AlternateC: Tx
@@ -185,7 +185,7 @@ bsp_pins!(
 
     #[cfg(feature = "unproven")]
     PB13 {
-        name: d9,
+        name: rx,
         aliases: {
             #[cfg(feature = "uart")]
             AlternateC: Rx
