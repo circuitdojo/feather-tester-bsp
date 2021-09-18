@@ -90,6 +90,11 @@ bsp_pins!(
     }
 
     #[cfg(feature = "unproven")]
+    PA07 {
+        name: d7
+    }
+
+    #[cfg(feature = "unproven")]
     PB12 {
         name: d10
         aliases: {
