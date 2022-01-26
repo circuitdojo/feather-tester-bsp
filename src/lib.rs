@@ -234,6 +234,12 @@ bsp_pins!(
             AlternateG: UsbDp
         }
     }
+
+    #[cfg(feature = "unproven")]
+    PA15 {
+        name: vat_sink,
+        aliases: { PushPullOutput: VbatSink }
+    }
 );
 
 #[cfg(feature = "usb")]
